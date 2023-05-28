@@ -3,9 +3,11 @@ package com.hvdev.ECommerceAPP.viewmodel
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import com.hvdev.ECommerceAPP.data.User
 import com.hvdev.ECommerceAPP.fragments.RegisterFragment
 import com.hvdev.ECommerceAPP.util.*
+import com.hvdev.ECommerceAPP.util.Constants.USER_COLLECTION
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +18,6 @@ import javax.inject.Inject
 
 
 /*
-
 Without dagger hilt : as we know in the view models we pass the dependencies from the outside
 and what we are going to use in this class is an instance from the firebase authentication so
 to get that we use here firebaseAuth as mention below
@@ -32,13 +33,15 @@ keyword
     ): ViewModel() {
     }
 */
+
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
+    private val db: FirebaseFirestore
 ): ViewModel() {
 
-    private val _register = MutableStateFlow<Resource<FirebaseUser>>(Resource.Unspecified())
-    val register : Flow<Resource<FirebaseUser>> = _register
+    private val _register = MutableStateFlow<Resource<User>>(Resource.Unspecified())
+    val register : Flow<Resource<User>> = _register
 
     private val _validation = Channel<RegisterFieldsState> ()
     val validation = _validation.receiveAsFlow()
@@ -51,7 +54,8 @@ class RegisterViewModel @Inject constructor(
             firebaseAuth.createUserWithEmailAndPassword(user.email, password)
                 .addOnSuccessListener {
                     it.user?.let {
-                        _register.value = Resource.Success(it)
+                        saveUserInfo(it.uid,user)
+                        // _register.value = Resource.Success(it)
                     }
                 }.addOnFailureListener {
                     _register.value = Resource.Error(it.message.toString())
@@ -65,6 +69,17 @@ class RegisterViewModel @Inject constructor(
                 _validation.send(registerFieldsState)
             }
         }
+    }
+
+    private fun saveUserInfo(userUid: String, user: User) {
+        db.collection(USER_COLLECTION)
+            .document(userUid)
+            .set(user)
+            .addOnSuccessListener {
+                _register.value = Resource.Success(user)
+            }.addOnFailureListener {
+                _register.value = Resource.Error(it.message.toString())
+            }
     }
 
     private fun checkValidation(user: User, password: String) : Boolean {
