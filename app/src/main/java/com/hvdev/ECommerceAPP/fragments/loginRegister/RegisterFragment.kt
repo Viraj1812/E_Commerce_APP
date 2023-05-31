@@ -1,4 +1,4 @@
-package com.hvdev.ECommerceAPP.fragments
+package com.hvdev.ECommerceAPP.fragments.loginRegister
 
 import android.os.Bundle
 import android.util.Log
@@ -17,7 +17,6 @@ import com.hvdev.ECommerceAPP.util.Resource
 import com.hvdev.ECommerceAPP.viewmodel.RegisterViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 
 private val TAG = "RegisterFragment"

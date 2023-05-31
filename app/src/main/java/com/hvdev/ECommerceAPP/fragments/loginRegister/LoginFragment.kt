@@ -1,4 +1,4 @@
-package com.hvdev.ECommerceAPP.fragments
+package com.hvdev.ECommerceAPP.fragments.loginRegister
 
 import android.content.Intent
 import android.os.Bundle

@@ -2,10 +2,8 @@ package com.hvdev.ECommerceAPP.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.hvdev.ECommerceAPP.data.User
-import com.hvdev.ECommerceAPP.fragments.RegisterFragment
 import com.hvdev.ECommerceAPP.util.*
 import com.hvdev.ECommerceAPP.util.Constants.USER_COLLECTION
 import dagger.hilt.android.lifecycle.HiltViewModel
